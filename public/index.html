@@ -1,0 +1,34 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>quotes</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/manifest.json">
+  <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="/quotes-app.html">
+</head>
+<body>
+
+<platinum-sw-register
+        auto-register
+        skip-waiting
+        clients-claim
+        reload-on-install
+        href="sw-import.js">
+  <platinum-sw-cache
+          default-cache-strategy="networkFirst">
+  </platinum-sw-cache>
+</platinum-sw-register>
+
+<firebase-app
+        name="quotes"
+        api-key="AIzaSyDXwU-MAab9Mgy-Vcm_oHGuhsJz7xncS7c"
+        auth-domain="quotes-71b16.firebaseapp.com"
+        database-url="https://quotes-71b16.firebaseio.com">
+</firebase-app>
+
+<quotes-app></quotes-app>
+</body>
+</html>

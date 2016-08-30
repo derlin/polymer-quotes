@@ -1,0 +1,20 @@
+{
+  "name": "quotes",
+  "main": "index.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "firebase-element": "GoogleWebComponents/firebase-element#^1.0.15",
+    "gulp": "^3.9.1",
+    "app-layout": "PolymerElements/app-layout#^0.10.3",
+    "iron-media-query": "PolymerElements/iron-media-query#^1.0.8",
+    "paper-tabs": "PolymerElements/paper-tabs#^1.6.2",
+    "paper-menu": "PolymerElements/paper-menu#^1.2.2",
+    "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  }
+}

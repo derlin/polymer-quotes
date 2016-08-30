@@ -1,0 +1,8 @@
+.tmp
+dist
+public/bower_components
+.firebaserc
+firebase.json
+test
+node_modules
+.idea

@@ -1,0 +1,129 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="/bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="/bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="/bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="elements/qa-login.html">
+
+
+<dom-module id="quotes-app">
+    <template>
+        <style>
+            :host {
+                --app-primary-color: red;
+                --app-secondary-color: black;
+                --app-toolbar-text-color: white;
+                display: block;
+                height: 100%;
+            }
+
+            app-header {
+                color: #fff;
+                background-color: var(--app-primary-color);
+            }
+
+            app-header paper-icon-button {
+                --paper-icon-button-ink-color: white;
+                color: var(--app-toolbar-text-color);
+            }
+
+            paper-item {
+                display: block;
+                padding: 10px;
+            }
+
+        </style>
+
+        <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"
+                          on-query-matches-changed="closeMenu"></iron-media-query>
+
+
+        <app-header-layout>
+            <app-header fixed condenses effects="waterfall">
+
+                <app-toolbar>
+                    <paper-menu-button id="menu">
+                        <paper-icon-button icon="menu" class="dropdown-trigger" vertical-align="bottom" horizontal-align="right"
+                                           hidden$="{{wideLayout}}"></paper-icon-button>
+                        <paper-menu class="dropdown-content" hidden$="{{wideLayout}}"
+                                    selected="{{selected}}" attr-for-selected="name">
+                            <paper-item name="home">home</paper-item>
+                            <paper-item name="about">about</paper-item>
+                        </paper-menu>
+                    </paper-menu-button>
+                    <div main-title>Awesome quotes</div>
+                    <paper-icon-button icon="polymer"></paper-icon-button>
+                </app-toolbar>
+                <app-toolbar></app-toolbar>
+                <app-toolbar class="tabs-bar" sticky hidden$="{{!wideLayout}}" paper-menu-toggle>
+                    <!-- Nav on desktop: tabs -->
+                    <paper-tabs selected="{{selected}}" attr-for-selected="name" bottom-item>
+                        <paper-tab name="home">home</paper-tab>
+                        <paper-tab name="about">about</paper-tab>
+                    </paper-tabs>
+                </app-toolbar>
+
+            </app-header>
+
+            <!--content-->
+
+            <div style="height: 1000px">
+
+
+                <iron-pages selected="{{selected}}" attr-for-selected="name">
+                    <div name="home">
+                        <qa-login signedIn="{{signedIn}}" on-sign-in=""></qa-login>
+                    </div>
+                    <div name="about">[[selected]]</div>
+
+                </iron-pages>
+            </div>
+        </app-header-layout>
+
+
+        <!--firebase-->
+        <!--<firebase-document-->
+        <!--id="document"-->
+        <!--app-name="quotes"-->
+        <!--path="[[editableQuoteId]]"-->
+        <!--data="{{editableQuote}}">-->
+        <!--</firebase-document>-->
+
+
+        <!--<firebase-query-->
+        <!--id="query"-->
+        <!--app-name="quotes"-->
+        <!--path="/quotes/[[user.uid]]"-->
+        <!--data="{{quotes}}">-->
+        <!--</firebase-query>-->
+
+    </template>
+
+    <script>
+        Polymer( {
+
+            is: 'quotes-app',
+
+            properties: {
+                selected: {
+                    type : String,
+                    value: 'home',
+                },
+            },
+
+            closeMenu: function(){
+                this.$.menu.close();
+            }
+
+        } );
+    </script>
+</dom-module>
