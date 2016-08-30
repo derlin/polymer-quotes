@@ -1,0 +1,84 @@
+<link rel="import" href="/bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="/bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="/bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
+
+
+<dom-module id="qa-editor">
+    <style>
+        :host {
+            width: 100%;
+        }
+
+        :host[wide-layout] paper-dialog {
+            max-width: 750px;
+        }
+
+        paper-dialog {
+            width: 100%;
+            z-index: 104;
+        }
+    </style>
+
+    <template>
+        <paper-dialog with-backdrop entry-animation="scale-up-animation"
+                      exit-animation="fade-out-animation" id="editDialog" opened="{{opened}}"
+                      on-iron-overlay-closed="_dialogClosed">
+            <paper-textarea label="quote" value="{{quoteElement.quote::input}}"></paper-textarea>
+            <paper-input label="author" value="{{quoteElement.author}}"></paper-input>
+
+            <div class="buttons">
+                <paper-button dialog-dismiss>Discard</paper-button>
+                <paper-button dialog-confirm autofocus
+                              disabled="{{!checkQuote(quoteElement.quote, quoteElement.author)}}">Save
+                </paper-button>
+            </div>
+
+        </paper-dialog>
+    </template>
+
+    <script>
+        Polymer( {
+            is: "qa-editor",
+
+            properties: {
+                quoteElement: {
+                    type  : Object,
+                    notify: true
+                },
+
+                opened: {
+                    type              : Boolean,
+                    reflectToAttribute: true,
+                    readOnly          : true,
+                    value             : false
+                },
+
+                wideLayout: {
+                    type              : Boolean,
+                    reflectToAttribute: true
+                }
+            },
+
+            _dialogClosed: function( e ){
+                this.fire( 'close', {canceled: e.detail.canceled, quoteElement: this.quoteElement},
+                        {bubbles: false} );
+            },
+
+            checkQuote: function( quote, author ){
+                return quote && quote.length > 6 && author;
+            },
+
+            open: function( quoteElement ){
+                if( !quoteElement ){
+                    this.quoteElement = {quote: '', author: ''};
+                }
+                this.$.editDialog.open();
+            }
+        } );
+    </script>
+</dom-module>

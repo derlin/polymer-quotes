@@ -1,8 +1,8 @@
 <link rel="import" href="/bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="/bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="/bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="/bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="/bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="/bower_components/iron-media-query/iron-media-query.html">
@@ -11,8 +11,13 @@
 <link rel="import" href="/bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="/bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="/bower_components/app-storage/app-network-status-behavior.html">
+<link rel="import" href="/bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="/bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 
-<link rel="import" href="elements/qa-login.html">
+<link rel="import" href="/elements/qa-login.html">
+<link rel="import" href="/elements/qa-editor.html">
 
 
 <dom-module id="quotes-app">
@@ -43,6 +48,9 @@
 
         </style>
 
+
+
+
         <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"
                           on-query-matches-changed="closeMenu"></iron-media-query>
 
@@ -61,7 +69,13 @@
                         </paper-menu>
                     </paper-menu-button>
                     <div main-title>Awesome quotes</div>
-                    <paper-icon-button icon="polymer"></paper-icon-button>
+                    <iron-icon icon="cloud" hidden$="[[!online]]"></iron-icon>
+                    <iron-icon icon="cloud-off" hidden$="[[online]]"></iron-icon>
+                    <paper-icon-button
+                            icon="[[computeLockIcon(signedIn)]]"
+                            disabled="[[!signedIn]]"
+                            on-tap="signOut">
+                    </paper-icon-button>
                 </app-toolbar>
                 <app-toolbar></app-toolbar>
                 <app-toolbar class="tabs-bar" sticky hidden$="{{!wideLayout}}" paper-menu-toggle>
@@ -78,10 +92,18 @@
 
             <div style="height: 1000px">
 
-
                 <iron-pages selected="{{selected}}" attr-for-selected="name">
+
                     <div name="home">
-                        <qa-login signedIn="{{signedIn}}" on-sign-in=""></qa-login>
+                        <qa-login signed-in="[[signedIn]]" on-sign-in="signIn" disabled="[[!online]]"></qa-login>
+
+                        <paper-fab
+                                icon="add"
+                                on-tap="create"
+                                disabled="[[!online]]"
+                                aria-label="Add quote">
+                        </paper-fab>
+
                     </div>
                     <div name="about">[[selected]]</div>
 
@@ -89,22 +111,39 @@
             </div>
         </app-header-layout>
 
+        <qa-editor id="editor" wide-layout="[[wideLayout]]" on-close="editorClosed"></qa-editor>
 
         <!--firebase-->
-        <!--<firebase-document-->
-        <!--id="document"-->
-        <!--app-name="quotes"-->
-        <!--path="[[editableQuoteId]]"-->
-        <!--data="{{editableQuote}}">-->
-        <!--</firebase-document>-->
+
+        <firebase-auth
+                id="auth"
+                app-name="quotes"
+                provider="google"
+                signed-in="{{signedIn}}"
+                user="{{user}}">
+        </firebase-auth>
+
+        <firebase-document
+                id="document"
+                app-name="quotes"
+                path="[[editableQuoteId]]"
+                data="{{editableQuote}}">
+        </firebase-document>
 
 
-        <!--<firebase-query-->
-        <!--id="query"-->
-        <!--app-name="quotes"-->
-        <!--path="/quotes/[[user.uid]]"-->
-        <!--data="{{quotes}}">-->
-        <!--</firebase-query>-->
+        <firebase-query
+                id="query"
+                app-name="quotes"
+                path="/quotes/[[user.uid]]"
+                data="{{liveQuotes}}">
+        </firebase-query>
+
+        <app-indexeddb-mirror
+                session="[[user.uid]]"
+                key="quotes"
+                data="{{liveQuotes}}"
+                persisted-data="{{quotes}}">
+        </app-indexeddb-mirror>
 
     </template>
 
@@ -113,15 +152,42 @@
 
             is: 'quotes-app',
 
+            behaviors: [
+                Polymer.AppNetworkStatusBehavior
+            ],
+
             properties: {
                 selected: {
                     type : String,
                     value: 'home',
-                },
+                }
             },
 
             closeMenu: function(){
                 this.$.menu.close();
+            },
+
+            computeLockIcon: function(signedIn) {
+                return signedIn ? 'lock-open' : 'lock';
+            },
+
+            lock: function() {
+                this.fire('sign-out');
+            },
+
+            signIn: function(){
+                this.$.auth.signInWithPopup();
+            },
+
+            create: function(){
+                this.$.editor.open();
+            },
+
+            editorClosed: function(details){
+                 console.log("editor closed", details);
+                if(!details.canceled){
+
+                }
             }
 
         } );

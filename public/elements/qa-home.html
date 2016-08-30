@@ -1,0 +1,27 @@
+<link rel="import" href="/elements/qa-login.html">
+
+<dom-module id="qa-home">
+
+    <style>
+        :host {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+    <template>
+        <qa-login signedIn="{{signedIn}}"></qa-login>
+        <h1>Your quotes</h1>
+
+
+
+
+    </template>
+
+    <script>
+
+        Polymer({
+            is: "qa-home"
+        });
+    </script>
+</dom-module>
