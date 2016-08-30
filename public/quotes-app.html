@@ -14,6 +14,8 @@
 <link rel="import" href="/bower_components/app-storage/app-network-status-behavior.html">
 <link rel="import" href="/bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/paper-card/paper-card.html">
 <link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 
 <link rel="import" href="/elements/qa-login.html">
@@ -104,6 +106,19 @@
                                 aria-label="Add quote">
                         </paper-fab>
 
+                        <template is="dom-repeat" items="{{quotes}}" as="item">
+                            <paper-card>
+                                <div class="card-content">
+                                    <blockquote>"{{item.quote}}"</blockquote>
+                                    <div class="author">{{item.author}}</div>
+                                </div>
+                                <div class="card-actions">
+                                    <paper-icon-button on-tap="delete" icon="delete" title="delete"></paper-icon-button>
+                                    <paper-icon-button on-tap="edit" icon="edit" title="edit"></paper-icon-button>
+                                </div>
+                            </paper-card>
+                        </template>
+
                     </div>
                     <div name="about">[[selected]]</div>
 
@@ -111,7 +126,9 @@
             </div>
         </app-header-layout>
 
-        <qa-editor id="editor" wide-layout="[[wideLayout]]" on-close="editorClosed"></qa-editor>
+        <qa-editor id="editor" wide-layout="[[wideLayout]]" on-close="editorClosed"
+                   quote-element="{{editedQuote}}"></qa-editor>
+        <paper-toast id="toast"></paper-toast>
 
         <!--firebase-->
 
@@ -120,14 +137,15 @@
                 app-name="quotes"
                 provider="google"
                 signed-in="{{signedIn}}"
+                on-error="onFirebaseError"
                 user="{{user}}">
         </firebase-auth>
 
         <firebase-document
                 id="document"
                 app-name="quotes"
-                path="[[editableQuoteId]]"
-                data="{{editableQuote}}">
+                path="[[firebaseQuoteRef]]"
+                data="{{editedQuote}}">
         </firebase-document>
 
 
@@ -179,15 +197,43 @@
                 this.$.auth.signInWithPopup();
             },
 
+            signOut() {
+                if (this.$.auth) {
+                    this.$.auth.signOut();
+                }
+            },
+
+            get firebaseCollectionRef(){
+                return '/quotes/' + this.user.uid;
+            },
+
+            toFirebaseRef: function(quote){
+                return this.firebaseCollectionRef + "/" + (this.quote.id ? this.quote.id : "");
+            },
+
             create: function(){
                 this.$.editor.open();
             },
 
+            onFirebaseError: function(event) {
+                this.$.toast.text = event.detail.message;
+                this.$.toast.show();
+            },
+
             editorClosed: function(details){
                  console.log("editor closed", details);
+                let doc = this.$.document;
+                let ref = this.toFirebaseRef(this.editedQuote);
                 if(!details.canceled){
-
+                    console.log(this.editedQuote, ref, merde);
+                    doc.save(ref).then(() => doc.reset() );
                 }
+            },
+
+            delete: function(event){
+                let quoteElement = Polymer.dom(event).localTarget;
+                console.log(event);
+                console.log(quoteElement);
             }
 
         } );

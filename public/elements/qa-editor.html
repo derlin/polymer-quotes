@@ -25,7 +25,7 @@
     </style>
 
     <template>
-        <paper-dialog with-backdrop entry-animation="scale-up-animation"
+        <paper-dialog with-backdrop entry-animation="scale-up-animation" modal
                       exit-animation="fade-out-animation" id="editDialog" opened="{{opened}}"
                       on-iron-overlay-closed="_dialogClosed">
             <paper-textarea label="quote" value="{{quoteElement.quote::input}}"></paper-textarea>
