@@ -25,17 +25,14 @@
     </style>
 
     <template>
-        <paper-dialog with-backdrop entry-animation="scale-up-animation" modal
+        <paper-dialog with-backdrop entry-animation="scale-up-animation"
                       exit-animation="fade-out-animation" id="editDialog" opened="{{opened}}"
                       on-iron-overlay-closed="_dialogClosed">
             <paper-textarea label="quote" value="{{quoteElement.quote::input}}"></paper-textarea>
             <paper-input label="author" value="{{quoteElement.author}}"></paper-input>
 
             <div class="buttons">
-                <paper-button dialog-dismiss>Discard</paper-button>
-                <paper-button dialog-confirm autofocus
-                              disabled="{{!checkQuote(quoteElement.quote, quoteElement.author)}}">Save
-                </paper-button>
+                <paper-button dialog-confirm autofocus>Done</paper-button>
             </div>
 
         </paper-dialog>
@@ -61,7 +58,9 @@
                 wideLayout: {
                     type              : Boolean,
                     reflectToAttribute: true
-                }
+                },
+
+                isNew: Boolean
             },
 
             _dialogClosed: function( e ){
@@ -69,13 +68,13 @@
                         {bubbles: false} );
             },
 
-            checkQuote: function( quote, author ){
-                return quote && quote.length > 6 && author;
-            },
 
             open: function( quoteElement ){
-                if( !quoteElement ){
+                this.isNew = !quoteElement;
+                if( this.isNew ){
                     this.quoteElement = {quote: '', author: ''};
+                }else{
+                    this.quoteElement = quoteElement;
                 }
                 this.$.editDialog.open();
             }

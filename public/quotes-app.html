@@ -15,11 +15,11 @@
 <link rel="import" href="/bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="/bower_components/paper-card/paper-card.html">
 <link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 
 <link rel="import" href="/elements/qa-login.html">
 <link rel="import" href="/elements/qa-editor.html">
+<link rel="import" href="/elements/qa-quote.html">
 
 
 <dom-module id="quotes-app">
@@ -107,16 +107,7 @@
                         </paper-fab>
 
                         <template is="dom-repeat" items="{{quotes}}" as="item">
-                            <paper-card>
-                                <div class="card-content">
-                                    <blockquote>"{{item.quote}}"</blockquote>
-                                    <div class="author">{{item.author}}</div>
-                                </div>
-                                <div class="card-actions">
-                                    <paper-icon-button on-tap="delete" icon="delete" title="delete"></paper-icon-button>
-                                    <paper-icon-button on-tap="edit" icon="edit" title="edit"></paper-icon-button>
-                                </div>
-                            </paper-card>
+                            <qa-quote quote-element="[[item]]" on-edit="edit" on-delete="delete"></qa-quote>
                         </template>
 
                     </div>
@@ -144,7 +135,7 @@
         <firebase-document
                 id="document"
                 app-name="quotes"
-                path="[[firebaseQuoteRef]]"
+                path="[[editedQuoteRef]]"
                 data="{{editedQuote}}">
         </firebase-document>
 
@@ -178,6 +169,10 @@
                 selected: {
                     type : String,
                     value: 'home',
+                },
+                editedQuoteRef: {
+                    type: String,
+                    notify: true
                 }
             },
 
@@ -208,10 +203,11 @@
             },
 
             toFirebaseRef: function(quote){
-                return this.firebaseCollectionRef + "/" + (this.quote.id ? this.quote.id : "");
+                return this.firebaseCollectionRef + "/" + (quote.$key ? quote.$key : "");
             },
 
             create: function(){
+                this.editedQuoteRef = null;
                 this.$.editor.open();
             },
 
@@ -220,20 +216,31 @@
                 this.$.toast.show();
             },
 
-            editorClosed: function(details){
-                 console.log("editor closed", details);
+            editorClosed: function(event){
                 let doc = this.$.document;
-                let ref = this.toFirebaseRef(this.editedQuote);
-                if(!details.canceled){
-                    console.log(this.editedQuote, ref, merde);
-                    doc.save(ref).then(() => doc.reset() );
+                let q = this.editedQuote;
+                console.log("editor closed", event.detail, q);
+
+                if(doc.isNew && q.author && q.quote && q.quote.length > 3){
+                    console.log( "saving", q );
+                    doc.save( this.firebaseCollectionRef ).then( () => doc.reset() );
                 }
             },
 
+
+            edit: function(event){
+                let qaQuote = Polymer.dom(event).localTarget;
+                let quoteElement = qaQuote.quoteElement;
+                this.editedQuoteRef = this.toFirebaseRef(quoteElement);
+                this.$.editor.open({quote: quoteElement.quote, author: quoteElement.author});
+            },
+
             delete: function(event){
-                let quoteElement = Polymer.dom(event).localTarget;
-                console.log(event);
-                console.log(quoteElement);
+                let qaQuote = Polymer.dom(event).localTarget;
+                let quote = qaQuote.quoteElement;
+
+                this.editedQuoteRef =  this.toFirebaseRef(quote);
+                this.$.document.destroy();
             }
 
         } );

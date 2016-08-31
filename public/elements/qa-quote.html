@@ -1,0 +1,43 @@
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="/bower_components/iron-icons/editor-icons.html" />
+<link rel="import" href="/bower_components/paper-card/paper-card.html">
+
+<dom-module id="qa-quote">
+    <style>
+
+    </style>
+
+    <template>
+        <paper-card>
+            <div class="card-content">
+                <blockquote>"{{quoteElement.quote}}"</blockquote>
+                <div class="author">{{quoteElement.author}}</div>
+            </div>
+            <div class="card-actions">
+                <paper-icon-button on-tap="delete" icon="delete" title="delete"></paper-icon-button>
+                <paper-icon-button on-tap="edit" icon="editor:mode-edit" title="edit"></paper-icon-button>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'qa-quote',
+
+            properties: {
+                quoteElement: {
+                    type: Object
+                },
+            },
+
+            delete: function(){
+                this.fire('delete', this.quoteElement);
+            } ,
+
+            edit: function(){
+                this.fire('edit', this.quoteElement);
+            }
+        });
+    </script>
+</dom-module>
