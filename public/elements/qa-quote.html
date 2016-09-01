@@ -9,9 +9,42 @@
             display: inline-block;
         }
 
+        ::before, ::after {
+            margin: auto .5em;
+            color: grey;
+        }
+
+        blockquote::before {
+            content: '\00ab';
+        }
+
+        blockquote::after {
+            content: '\00bb';
+        }
+
+        blockquote {
+            font-style: italic;
+        }
+
+        .author::before {
+            content: '-';
+        }
+
+        .author::after {
+            content: '-';
+        }
+
+        .author {
+            margin-left: 30px;
+        }
+
         paper-card {
             display: block;
             @apply(--quote);
+        }
+
+        paper-card .card-actions {
+            text-align: right;
         }
 
     </style>
@@ -19,7 +52,7 @@
     <template>
         <paper-card>
             <div class="card-content">
-                <blockquote>"{{quoteElement.quote}}"</blockquote>
+                <blockquote>{{quoteElement.quote}}</blockquote>
                 <div class="author">{{quoteElement.author}}</div>
             </div>
             <div class="card-actions">

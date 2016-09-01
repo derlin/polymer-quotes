@@ -15,6 +15,7 @@
 <link rel="import" href="/bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/paper-styles/color.html">
 <link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 
 <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -28,16 +29,23 @@
     <template>
         <style include="iron-flex iron-flex-alignment">
             :host {
-                --app-primary-color: red;
-                --app-secondary-color: black;
+                --app-primary-color: var(--paper-deep-purple-700);
+                --app-secondary-color: var(--paper-pink-700);
                 --app-toolbar-text-color: white;
                 display: block;
-                height: 100%;
-            }
+                min-height: 99vh;
+                background-color: #eee;
 
-            #contentContainer{
-                max-width: 1000px;
-                margin: auto;
+                /*background: url('http://www.gillikinconsulting.com/wp-content/uploads/2013/11/Writer3a_writing_BnW.jpg');*/
+                /*background-attachment: fixed;*/
+                /*background-position: bottom right;*/
+
+
+                /*background: url('https://media4.giphy.com/media/nrZ9h9xpOro2Y/200_s.gif');*/
+                /*background: url('http://www.clipartkid.com/images/228/bubbles-clip-art-at-clker-com-vector-clip-art-online-royalty-free-t3EwMQ-clipart.png');*/
+                /*background-repeat: repeat;*/
+                /*background-size: inherit;*/
+                /*background-attachment: fixed;*/
             }
 
             app-header {
@@ -59,7 +67,18 @@
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
                 @apply(layout-start);
+                /*@apply(--layout-vertical);*/
                 @apply(--layout-center-justified);
+                max-width: 1000px;
+                margin: auto;
+            }
+
+            paper-tabs[aria-selected]{
+                text-shadow: 1px 1px grey;
+            }
+
+            paper-tabs {
+                --paper-tabs-selection-bar-color: var(--app-secondary-color);
             }
 
             qa-quote {
@@ -77,9 +96,6 @@
                 }
             }
 
-            iron-pages {
-                width: 100%;
-            }
 
         </style>
 
@@ -125,11 +141,10 @@
 
             <!--content-->
 
-            <div class="container" style="height: 1000px">
 
                 <iron-pages selected="{{selected}}" attr-for-selected="name">
 
-                    <div name="home">
+                    <div name="home" class="container">
                         <qa-login signed-in="[[signedIn]]" on-sign-in="signIn" disabled="[[!online]]"></qa-login>
 
                         <paper-fab
@@ -151,7 +166,6 @@
                     <div name="about">[[selected]]</div>
 
                 </iron-pages>
-            </div>
         </app-header-layout>
 
         <qa-editor id="editor" wide-layout="[[wideLayout]]" on-close="editorClosed"
