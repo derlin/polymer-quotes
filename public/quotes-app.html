@@ -17,7 +17,7 @@
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 
-<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="/elements/qa-login.html">
 <link rel="import" href="/elements/qa-editor.html">
@@ -26,13 +26,18 @@
 
 <dom-module id="quotes-app">
     <template>
-        <style>
+        <style include="iron-flex iron-flex-alignment">
             :host {
                 --app-primary-color: red;
                 --app-secondary-color: black;
                 --app-toolbar-text-color: white;
                 display: block;
                 height: 100%;
+            }
+
+            #contentContainer{
+                max-width: 1000px;
+                margin: auto;
             }
 
             app-header {
@@ -51,15 +56,25 @@
             }
 
             #quotes {
-                text-align: center;
-            }
-
-            .quote {
-                @apply(--layout-wrap);
-            }
-            .container {
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
+                @apply(layout-start);
+                @apply(--layout-center-justified);
+            }
+
+            qa-quote {
+                --quote: {
+                    margin: 0 0.5em 1em;
+                };
+            }
+
+
+            @media (max-width: 640px) {
+
+                #quotes {
+                    @apply(--layout-vertical);
+                    @apply(--layout-justified);
+                }
             }
 
             iron-pages {
@@ -124,7 +139,7 @@
                                 aria-label="Add quote">
                         </paper-fab>
 
-                        <div id="quotes">
+                        <div id="quotes" class="horizontal layout center-justified wrap">
                             <template is="dom-repeat" items="{{quotes}}" as="item">
                                 <qa-quote class="quote"  wide-layout="[[wideLayout]]"
                                           quote-element="[[item]]" on-edit="edit"

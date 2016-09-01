@@ -6,25 +6,14 @@
 <dom-module id="qa-quote">
     <style>
         :host {
-            display: block;
-            width: 100%;
-            margin: 10px auto;
-        }
-
-        :host[wide-layout] {
-            width: auto;
             display: inline-block;
-            margin: 10px;
         }
 
-        :host paper-card {
-            width: 90%;
-            max-width: 90%;
+        paper-card {
+            display: block;
+            @apply(--quote);
         }
 
-        :host[wide-layout] paper-card {
-            width: auto;
-        }
     </style>
 
     <template>
