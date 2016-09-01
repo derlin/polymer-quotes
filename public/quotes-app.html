@@ -17,6 +17,8 @@
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+
 <link rel="import" href="/elements/qa-login.html">
 <link rel="import" href="/elements/qa-editor.html">
 <link rel="import" href="/elements/qa-quote.html">
@@ -46,6 +48,22 @@
             paper-item {
                 display: block;
                 padding: 10px;
+            }
+
+            #quotes {
+                text-align: center;
+            }
+
+            .quote {
+                @apply(--layout-wrap);
+            }
+            .container {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+            }
+
+            iron-pages {
+                width: 100%;
             }
 
         </style>
@@ -92,7 +110,7 @@
 
             <!--content-->
 
-            <div style="height: 1000px">
+            <div class="container" style="height: 1000px">
 
                 <iron-pages selected="{{selected}}" attr-for-selected="name">
 
@@ -106,9 +124,13 @@
                                 aria-label="Add quote">
                         </paper-fab>
 
-                        <template is="dom-repeat" items="{{quotes}}" as="item">
-                            <qa-quote quote-element="[[item]]" on-edit="edit" on-delete="delete"></qa-quote>
-                        </template>
+                        <div id="quotes">
+                            <template is="dom-repeat" items="{{quotes}}" as="item">
+                                <qa-quote class="quote"  wide-layout="[[wideLayout]]"
+                                          quote-element="[[item]]" on-edit="edit"
+                                          on-delete="delete"></qa-quote>
+                            </template>
+                        </div>
 
                     </div>
                     <div name="about">[[selected]]</div>
