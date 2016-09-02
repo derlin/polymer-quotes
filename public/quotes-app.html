@@ -19,6 +19,7 @@
 <link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 
 <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/font-roboto/roboto.html">
 
 <link rel="import" href="/elements/qa-login.html">
 <link rel="import" href="/elements/qa-editor.html">
@@ -29,6 +30,7 @@
     <template>
         <style include="iron-flex iron-flex-alignment">
             :host {
+                font-family: Roboto;
                 --app-primary-color: var(--paper-deep-purple-700);
                 --app-secondary-color: var(--paper-pink-700);
                 --app-bg: #eee;
@@ -90,12 +92,23 @@
                 --quote: {
                     margin: 0 0.5em 1em;
                 };
+                --quote-icon: {
+                    color: var(--app-secondary-color);
+                }
             }
 
             paper-fab {
                 position: fixed;
                 bottom: 50px;
                 left: 100px;
+            }
+
+            #about {
+                text-align: center;
+            }
+
+            .container {
+                padding: 50px 10px;
             }
 
 
@@ -186,7 +199,15 @@
 
 
                     </div>
-                    <div name="about">[[selected]]</div>
+                    <div name="about" class="container">
+                        <div id="about">
+                        <h1>What for</h1>
+                        This site is mainly a test for building progressive web apps with Polymer...
+                        But also to keep track of awesome quotes that could inspire me in times of troubles.
+                        </div>
+
+
+                    </div>
 
                 </iron-pages>
         </app-header-layout>

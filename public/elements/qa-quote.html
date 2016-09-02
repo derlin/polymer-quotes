@@ -22,10 +22,6 @@
             content: '\00bb';
         }
 
-        blockquote {
-            font-style: italic;
-        }
-
         .author::before {
             content: '-';
         }
@@ -45,6 +41,14 @@
 
         paper-card .card-actions {
             text-align: right;
+        }
+
+        paper-icon-button {
+            width: 35px;
+            height: 35px;
+            --paper-icon-button: {
+                @apply(--quote-icon);
+            }
         }
 
     </style>
