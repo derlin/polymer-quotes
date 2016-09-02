@@ -92,12 +92,24 @@
                 };
             }
 
+            paper-fab {
+                position: fixed;
+                bottom: 50px;
+                left: 100px;
+            }
+
 
             @media (max-width: 640px) {
 
                 #quotes {
                     @apply(--layout-vertical);
                     @apply(--layout-justified);
+                    padding-bottom: 50px;
+                }
+
+                paper-fab {
+                    left: 20px;
+                    bottom: 20px;
                 }
             }
 
@@ -115,15 +127,6 @@
             <app-header fixed condenses effects="waterfall">
 
                 <app-toolbar>
-                    <paper-menu-button id="menu">
-                        <paper-icon-button icon="menu" class="dropdown-trigger" vertical-align="bottom" horizontal-align="right"
-                                           hidden$="{{wideLayout}}"></paper-icon-button>
-                        <paper-menu class="dropdown-content" hidden$="{{wideLayout}}"
-                                    selected="{{selected}}" attr-for-selected="name">
-                            <paper-item name="home">home</paper-item>
-                            <paper-item name="about">about</paper-item>
-                        </paper-menu>
-                    </paper-menu-button>
                     <div main-title>Awesome quotes</div>
                     <iron-icon icon="cloud" hidden$="[[!online]]"></iron-icon>
                     <iron-icon icon="cloud-off" hidden$="[[online]]"></iron-icon>
@@ -134,12 +137,25 @@
                     </paper-icon-button>
                 </app-toolbar>
                 <app-toolbar></app-toolbar>
-                <app-toolbar class="tabs-bar" sticky hidden$="{{!wideLayout}}" paper-menu-toggle>
+                <app-toolbar class="tabs-bar" sticky paper-menu-toggle>
+
+
+                    <paper-menu-button id="menu" hidden$="{{wideLayout}}">
+                        <paper-icon-button icon="menu" class="dropdown-trigger" vertical-align="bottom" horizontal-align="right"
+                                           hidden$="{{wideLayout}}"></paper-icon-button>
+                        <paper-menu class="dropdown-content" hidden$="{{wideLayout}}"
+                                    selected="{{selected}}" attr-for-selected="name">
+                            <paper-item name="home">home</paper-item>
+                            <paper-item name="about">about</paper-item>
+                        </paper-menu>
+                    </paper-menu-button>
                     <!-- Nav on desktop: tabs -->
-                    <paper-tabs selected="{{selected}}" attr-for-selected="name" bottom-item>
+                    <paper-tabs hidden$="{{!wideLayout}}"  selected="{{selected}}" attr-for-selected="name" bottom-item>
                         <paper-tab name="home">home</paper-tab>
                         <paper-tab name="about">about</paper-tab>
                     </paper-tabs>
+
+
                 </app-toolbar>
 
             </app-header>
@@ -152,13 +168,6 @@
                     <div name="home" class="container">
                         <qa-login signed-in="[[signedIn]]" on-sign-in="signIn" disabled="[[!online]]"></qa-login>
 
-                        <paper-fab
-                                icon="add"
-                                on-tap="create"
-                                disabled="[[!online]]"
-                                aria-label="Add quote">
-                        </paper-fab>
-
                         <div id="quotes" class="horizontal layout center-justified wrap">
                             <template is="dom-repeat" items="{{quotes}}" as="item">
                                 <qa-quote class="quote"  wide-layout="[[wideLayout]]"
@@ -167,11 +176,21 @@
                             </template>
                         </div>
 
+                        <paper-fab
+                                elevation="3"
+                                icon="add"
+                                on-tap="create"
+                                disabled="[[!online]]"
+                                aria-label="Add quote">
+                        </paper-fab>
+
+
                     </div>
                     <div name="about">[[selected]]</div>
 
                 </iron-pages>
         </app-header-layout>
+
 
         <qa-editor id="editor" wide-layout="[[wideLayout]]" on-close="editorClosed"
                    quote-element="{{editedQuote}}"></qa-editor>
@@ -209,6 +228,7 @@
                 data="{{liveQuotes}}"
                 persisted-data="{{quotes}}">
         </app-indexeddb-mirror>
+
 
     </template>
 
