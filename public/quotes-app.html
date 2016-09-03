@@ -24,6 +24,7 @@
 <link rel="import" href="/elements/qa-login.html">
 <link rel="import" href="/elements/qa-editor.html">
 <link rel="import" href="/elements/qa-quote.html">
+<link rel="import" href="/elements/qa-searchbar.html">
 
 
 <dom-module id="quotes-app">
@@ -86,6 +87,7 @@
 
             paper-tabs {
                 --paper-tabs-selection-bar-color: var(--app-secondary-color);
+                width: 340px;
             }
 
             qa-quote {
@@ -111,6 +113,18 @@
                 padding: 50px 10px;
             }
 
+            #searchContainer {
+                padding: 0 10px;
+                position: fixed;
+                z-index: 10;
+            }
+
+            @media (min-width:890px) {
+                paper-tabs {
+                    width: 600px;
+                }
+            }
+
 
             @media (max-width: 640px) {
 
@@ -123,6 +137,13 @@
                 paper-fab {
                     left: 20px;
                     bottom: 20px;
+                }
+
+                #searchContainer {
+                    bottom: 0;
+                    right: 0;
+                    background: white;
+                    width: 40%;
                 }
             }
 
@@ -151,8 +172,6 @@
                 </app-toolbar>
                 <app-toolbar></app-toolbar>
                 <app-toolbar class="tabs-bar" sticky paper-menu-toggle>
-
-
                     <paper-menu-button id="menu" hidden$="{{wideLayout}}">
                         <paper-icon-button icon="menu" class="dropdown-trigger" vertical-align="bottom" horizontal-align="right"
                                            hidden$="{{wideLayout}}"></paper-icon-button>
@@ -168,21 +187,30 @@
                         <paper-tab name="about">about</paper-tab>
                     </paper-tabs>
 
+                    <qa-searchbar></qa-searchbar>
 
                 </app-toolbar>
 
             </app-header>
+
 
             <!--content-->
 
 
                 <iron-pages selected="{{selected}}" attr-for-selected="name">
 
-                    <div name="home" class="container">
+                    <div name="home" class="container" style="min-height: 1000px">
+
+                        <div id="searchContainer">
+                            <paper-input type="search" label="filter" no-label-float
+                                         value="{{searchTerm}}">
+                            </paper-input>
+                        </div>
+
                         <qa-login signed-in="[[signedIn]]" on-sign-in="signIn" disabled="[[!online]]"></qa-login>
 
                         <div id="quotes" class="horizontal layout center-justified wrap">
-                            <template is="dom-repeat" items="{{quotes}}" as="item">
+                            <template is="dom-repeat" items="{{quotes}}" as="item" filter="{{_filter(searchTerm)}}">
                                 <qa-quote class="quote"  wide-layout="[[wideLayout]]"
                                           quote-element="[[item]]" on-edit="edit"
                                           on-delete="delete"></qa-quote>
@@ -338,6 +366,15 @@
 
                 this.editedQuoteRef =  this.toFirebaseRef(quote);
                 this.$.document.destroy();
+            },
+
+            _filter: function(val) {
+                return function(quoteElement) {
+                    if (!val) return true;
+                    if (!quoteElement) return false;
+                    return (quoteElement.quote && quoteElement.quote.match(val)) ||
+                            (quoteElement.author && quoteElement.author.match(val));
+                };
             }
 
         } );

@@ -6,7 +6,7 @@
 <dom-module id="qa-searchbar">
     <template>
         <style>
-            #search {
+            :host {
                 display: -webkit-box;
                 display: -webkit-flex;
                 display: -moz-flex;
@@ -29,47 +29,34 @@
                 -moz-box-sizing: border-box;
                 -webkit-box-sizing: border-box;
                 box-sizing: border-box;
-                background-color: inherit
-            }
-
-            #search[show] {
+                background-color: inherit;
                 width: 100%;
                 height: 100%;
-                position: absolute;
-                left: 0;
-                top: 0;
                 padding: 0 16px;
                 margin-left: 0
             }
 
-            #search[show] input {
+            paper-input {
                 padding: 10px;
-                visibility: visible
+                background-color: inherit;
+                --paper-input-container-input-color: var(--searchbar-text-color, inherit) !important;
+                --paper-input-container-focus-color: var(--searchbar-focus-color);
+                --paper-input: {
+                    @apply(--searchbar-paper-input);
+                };
             }
 
-            input {
-                background-color: inherit;
-                border: none;
-                font-size: 20px;
-                outline: none;
-                padding: 0;
-                color: inherit;
-                -webkit-box-flex: 1;
-                -webkit-flex: 1 0 0;
-                -moz-flex: 1 0 0;
-                -ms-flex: 1 0 0;
-                -o-flex: 1 0 0;
-                flex: 1 0 0;
-                visibility: hidden;
-                -webkit-appearance: none
+
+            @media (max-width: 640px) {
+                paper-input {
+                    width: 150px;
+                }
             }
         </style>
-        <div id="search" show="true">
-            <paper-icon-button on-tap="toggleSearch" icon="search"></paper-icon-button>
-            <input show$="{{show}}"  is="iron-input" bind-value="{{searchInput}}" type="search" id="input"
-                    on-keyup="onKeyPress"
-                    autocomplete="off">
-        </div>
+
+        <paper-icon-button on-tap="toggleSearch" icon="search"></paper-icon-button>
+        <paper-input id="input" hidden$="{{!show}}" no-label-float value="{{searchInput}}"
+                      on-keyup="_onkeypress" tabindex="1"></paper-input>
     </template>
     <script>
         Polymer({
@@ -78,11 +65,13 @@
             properties: {
                 show: {
                     type: Boolean,
-                    value: true
+                    value: false
                 },
+
                 searchInput: {
                     type: String,
-                    value: ''
+                    value: '',
+                    notify: true
                 }
             },
 
@@ -90,19 +79,16 @@
                 if (e) { // comes first
                     e.stopPropagation();
                 }
-                if (e.target === this.$.input) {
-                    return;
-                }
                 this.show = !this.show;
-                this.async(function() {
-                    this.$.input.focus();
-                });
+                if(this.show)
+                    setTimeout(function() {
+                        this.$.input.inputElement.focus()
+                    }.bind(this), 500);
             },
 
-            onKeyPress: function(e) {
+            _onkeypress: function(e) {
                 if (e.keyCode == 13) { // Enter
-                    var q = this.searchInput;
-                    this.fire('search', q);
+                    this.fire('search', this.searchInput);
                     this.show = false;
                 }
             }
