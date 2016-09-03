@@ -91,6 +91,10 @@
                 left: auto;
             }
 
+            iron-icon {
+                margin: 0 4px;
+            }
+
             qa-quote {
                 --quote: {
                     margin: 0 0.5em 1em;
@@ -112,6 +116,11 @@
 
             .container {
                 padding: 50px 10px;
+            }
+
+            #photo {
+                height: 40px;
+                border-radius: 20px;
             }
 
             @media (min-width:890px) {
@@ -159,11 +168,10 @@
                     <div main-title>Awesome quotes</div>
                     <iron-icon icon="cloud" hidden$="[[!online]]"></iron-icon>
                     <iron-icon icon="cloud-off" hidden$="[[online]]"></iron-icon>
-                    <paper-icon-button
-                            icon="[[computeLockIcon(signedIn)]]"
-                            disabled="[[!signedIn]]"
-                            on-tap="signOut">
-                    </paper-icon-button>
+                    <iron-icon icon="block" hidden$="[[signedIn]]"></iron-icon>
+                    <iron-icon icon="power-settings-new" hidden$="[[!signedIn]]" aria-label="sign out" title="sign out"
+                               on-tap="signOut"></iron-icon>
+                    <img id="photo" hidden$="{{!user.photoURL}}" src$="{{user.photoURL}}">
                 </app-toolbar>
                 <app-toolbar></app-toolbar>
                 <app-toolbar class="tabs-bar" sticky paper-menu-toggle>
@@ -229,7 +237,6 @@
                 </iron-pages>
         </app-header-layout>
 
-
         <qa-editor id="editor" wide-layout="[[wideLayout]]" on-close="editorClosed"
                    quote-element="{{editedQuote}}"></qa-editor>
         <paper-toast id="toast"></paper-toast>
@@ -294,10 +301,6 @@
                 this.$.menu.close();
             },
 
-            computeLockIcon: function(signedIn) {
-                return signedIn ? 'lock-open' : 'lock';
-            },
-
             lock: function() {
                 this.fire('sign-out');
             },
@@ -323,6 +326,7 @@
             create: function(){
                 this.editedQuoteRef = null;
                 this.$.editor.open();
+                console.log(this.user);
             },
 
             onFirebaseError: function(event) {
