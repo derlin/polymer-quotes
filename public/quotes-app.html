@@ -88,6 +88,7 @@
             paper-tabs {
                 --paper-tabs-selection-bar-color: var(--app-secondary-color);
                 width: 340px;
+                left: auto;
             }
 
             qa-quote {
@@ -111,12 +112,6 @@
 
             .container {
                 padding: 50px 10px;
-            }
-
-            #searchContainer {
-                padding: 0 10px;
-                position: fixed;
-                z-index: 10;
             }
 
             @media (min-width:890px) {
@@ -187,7 +182,7 @@
                         <paper-tab name="about">about</paper-tab>
                     </paper-tabs>
 
-                    <qa-searchbar></qa-searchbar>
+                    <qa-searchbar hidden$="{{!_isHome(selected)}}" search-input="{{searchTerm}}"></qa-searchbar>
 
                 </app-toolbar>
 
@@ -200,12 +195,6 @@
                 <iron-pages selected="{{selected}}" attr-for-selected="name">
 
                     <div name="home" class="container" style="min-height: 1000px">
-
-                        <div id="searchContainer">
-                            <paper-input type="search" label="filter" no-label-float
-                                         value="{{searchTerm}}">
-                            </paper-input>
-                        </div>
 
                         <qa-login signed-in="[[signedIn]]" on-sign-in="signIn" disabled="[[!online]]"></qa-login>
 
@@ -375,6 +364,10 @@
                     return (quoteElement.quote && quoteElement.quote.match(val)) ||
                             (quoteElement.author && quoteElement.author.match(val));
                 };
+            },
+
+            _isHome: function(){
+                return this.selected == 'home';
             }
 
         } );
