@@ -365,8 +365,9 @@
                 return function(quoteElement) {
                     if (!val) return true;
                     if (!quoteElement) return false;
-                    return (quoteElement.quote && quoteElement.quote.match(val)) ||
-                            (quoteElement.author && quoteElement.author.match(val));
+                    var v = val.toLowerCase();
+                    return (quoteElement.quote && quoteElement.quote.toLowerCase().match(v)) ||
+                            (quoteElement.author && quoteElement.author.toLowerCase().match(v));
                 };
             },
 
