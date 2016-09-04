@@ -95,6 +95,10 @@
                 margin: 0 4px;
             }
 
+            iron-icon.link {
+                cursor: pointer;
+            }
+
             qa-quote {
                 --quote: {
                     margin: 0 0.5em 1em;
@@ -169,7 +173,8 @@
                     <iron-icon icon="cloud" hidden$="[[!online]]"></iron-icon>
                     <iron-icon icon="cloud-off" hidden$="[[online]]"></iron-icon>
                     <iron-icon icon="block" hidden$="[[signedIn]]"></iron-icon>
-                    <iron-icon icon="power-settings-new" hidden$="[[!signedIn]]" aria-label="sign out" title="sign out"
+                    <iron-icon class="link" icon="power-settings-new" hidden$="[[!signedIn]]" aria-label="sign out"
+                               title="sign out"
                                on-tap="signOut"></iron-icon>
                     <img id="photo" hidden$="{{!user.photoURL}}" src$="{{user.photoURL}}">
                 </app-toolbar>

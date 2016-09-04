@@ -20,9 +20,14 @@
             }
 
 
-            :host[active] paper-icon-button {
+            :host[active] paper-icon-button#searchIcon {
                color: var(--searchbar-active-color, yellow);
             }
+
+            paper-icon-button#clearIcon {
+               color: red;
+            }
+
 
             paper-input {
                 padding: 10px;
@@ -42,9 +47,13 @@
             }
         </style>
 
-        <paper-icon-button on-tap="toggleSearch" icon="search"></paper-icon-button>
+        <paper-icon-button id="searchIcon" on-tap="toggleSearch" icon="search" title="search"></paper-icon-button>
         <paper-input id="input" hidden$="{{!show}}" no-label-float value="{{searchInput}}"
-                      on-keyup="_onkeypress" tabindex="1"></paper-input>
+                      on-keyup="_onkeypress" tabindex="1">
+            <paper-icon-button id="clearIcon" suffix on-tap="clear" icon="clear" alt="clear" title="clear"
+                               disabled$="{{!active}}">
+            </paper-icon-button>
+        </paper-input>
     </template>
     <script>
         Polymer({
@@ -84,10 +93,14 @@
                     }.bind(this), 500);
             },
 
+            clear: function(){
+                console.log("clear");
+                 this.searchInput = '';
+            },
+
             _onkeypress: function(e) {
                 if (e.keyCode == 13) { // Enter
                     this.fire('search', this.searchInput);
-                    this.show = false;
                 }
             }
         });
