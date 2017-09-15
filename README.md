@@ -1,38 +1,59 @@
 # \<quotes\>
 
+Store your quotes on firebase: [https://derlin-quotes.firebaseapp.com](https://derlin-quotes.firebaseapp.com)
 
+This is a simple PWA (_Progressive Web App_) built with Polymer. It is integrated with firebase (using a Google authentication mecanism) and may be "installed" on the homescreen of an Android device.
 
-## Install the Polymer-CLI
+# Setup
 
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
-
-## Viewing Your Application
-
-```
-$ polymer serve
-```
-
-## Building Your Application
+## Clone the repo
 
 ```
-$ polymer build
+git clone https://github.com/derlin/polymer-quotes
+cd polymer-quotes
 ```
 
-This will create a `build/` folder with `bundled/` and `unbundled/` sub-folders
-containing a bundled (Vulcanized) and unbundled builds, both run through HTML,
-CSS, and JS optimizers.
+## Install dependencies
 
-You can serve the built versions by giving `polymer serve` a folder to serve
-from:
-
+The application uses `npm` and `bower`. To install everything, run:
 ```
-$ polymer serve build/bundled
+npm install
+bower install
 ```
 
-## Running Tests
+## Link with firebase
+
+Install firebase locally (use `-g` to install it system-wide):
+```
+npm install firebase-tools
+```
+
+Run the `init` command:
 
 ```
-$ polymer test
+./node_modules/firebase-tools/bin/firebase init
 ```
 
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+It will ask you a lot of things. You need the following features (_Which Firebase CLI features do you want to setup for this folder?_): 
+ * Database: Deploy Firebase Realtime Database Rules
+ * Hosting: Configure and deploy Firebase Hosting sites
+
+Then, use the default options and answer NO to all _overwrite_ prompt.
+
+# Run and deploy
+
+## Run locally
+
+This project uses _gulp_. Run locally for testing using:
+
+```
+gulp serve
+```
+
+## Deploy to Firebase
+
+To deploy to firebase, run:
+
+```
+./node_modules/firebase-tools/bin/firebase deploy
+```
